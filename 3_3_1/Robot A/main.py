@@ -22,38 +22,36 @@ ev3 = EV3Brick()
 left_motor = Motor(Port.B)
 right_motor = Motor(Port.C)
 
-robot=DriveBase(left_motor, right_motor, wheel_diameter=54, axle_track=105)
+robot=DriveBase(left_motor,right_motor,wheel_diameter=54,axle_track=105)
 
-
-MQTT_ClientID = 'b'
-MQTT_Broker = '172.20.10.5'
-MQTT_Topic_Status = 'Lego/Status'
-client = MQTTClient(MQTT_ClientID, MQTT_Broker, 1883)
-
+MQTT_ClientID='a'
+MQTT_Broker='172.20.10.5'
+MQTT_Topic_Status='Lego/Status'
+client=MQTTClient(MQTT_ClientID,MQTT_Broker,1883)
 
 def listen(topic,msg):
-    if topic == MQTT_Topic_Status.encode():
+    if topic==MQTT_Topic_Status.encode():
         ev3.screen.print(str(msg.decode()))
-        if str(msg.decode()) == 'Drive away!':       
-            robot.drive(100, 0)
-            time.sleep(1)
-            client.publish(MQTT_Topic_Status, 'Drive')
-            robot.stop()
-
-
 
 client.connect()
 time.sleep(0.5)
-#client.publish(MQTT_Topic_Status, 'hello world')
-ev3.screen.print('Started')
+client.publish(MQTT_Topic_Status,'Started')
 client.set_callback(listen)
 client.subscribe(MQTT_Topic_Status)
-time.sleep(0.5)
-client.publish(MQTT_Topic_Status, 'Listening') 
-ev3.screen.print('Listening')
+
+
 
 while True:
-    client.check_msg() 
+    client.check_msg()
     time.sleep(0.5)
+          
 
 
+
+
+
+
+    
+
+
+    

@@ -22,7 +22,7 @@ robot = DriveBase(left_motor, right_motor, wheel_diameter=54, axle_track=105)
 UltraSensor = UltrasonicSensor(Port.S4)
 
 MQTT_ClientID = 'a'
-MQTT_Broker = '192.168.73.51'
+MQTT_Broker = '172.20.10.4'
 MQTT_Topic_Status = 'Lego/Status'
 client = MQTTClient(MQTT_ClientID, MQTT_Broker, 1883)
 

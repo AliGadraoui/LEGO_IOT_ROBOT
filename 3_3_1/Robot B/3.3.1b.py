@@ -6,6 +6,7 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
+from umqtt.robust import MQTTClient
 import time
 
 
@@ -18,21 +19,27 @@ ev3 = EV3Brick()
 
 
 # Write your program here.
-left_motor = Motor(Port.B)
-right_motor = Motor(Port.C)
+MQTT_ClientID = 'b'
+MQTT_Broker = '172.20.10.5'
+MQTT_Topic_Status = 'Lego/Status'
+client = MQTTClient(MQTT_ClientID, MQTT_Broker, 1883)
 
-robot=DriveBase(left_motor,right_motor,wheel_diameter=54,axle_track=105)
-CSensor=ColorSensor(Port.S3)
+
+def listen(topic,msg):
+    if topic == MQTT_Topic_Status.encode():
+        ev3.screen.print(str(msg.decode()))
+
+
+
+client.connect()
+time.sleep(0.5)
+client.publish(MQTT_Topic_Status, 'hello world')
+ev3.screen.print('Started')
+client.set_callback(listen)
+client.subscribe(MQTT_Topic_Status)
+time.sleep(0.5)
+
 while True:
-    color = CSensor.color()
-    if color == Color.WHITE:
-        robot.drive(50,-50)
-    elif color == Color.BLACK:
-        robot.drive(50, 50)
-    elif color == Color.BLUE:
-        robot.drive(30, 50)
-    elif color == Color.RED:
-        robot.stop()
+    client.check_msg()
+    time.sleep(0.5)
 
-
-    
